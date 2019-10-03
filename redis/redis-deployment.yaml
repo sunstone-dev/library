@@ -1,0 +1,85 @@
+---
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    namespace: {{ .namespace | default "default" }}
+    labels:
+      name: redis      
+    name: redis
+  spec:
+    ports:
+    - name: tcp
+      port: 6379
+      protocol: TCP
+      targetPort: 6379 
+    selector:
+      app: redis
+    sessionAffinity: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: redis
+  namespace: {{ .namespace | default "default" }}
+  labels: 
+      name: "redis"      
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      name: redis
+      labels:
+        app: redis
+        tier: backend
+    spec:
+      # Provision a fresh volume for the pod
+      # [START volumes]
+      {{ if .redis-data-pd }}
+      volumes:        
+        - name: redis-data
+          gcePersistentDisk:
+            # This disk must already exist. Check Readme
+            pdName: redis-data-pd
+            fsType: ext4        
+      # [END volumes]
+      {{ end}}
+      containers:
+        - image: redis:{{ .tag | default "alpine" }}
+          resources:
+            limits:
+              cpu: "150m"
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          imagePullPolicy: Always             
+          name: redis
+          livenessProbe:
+            exec:
+              command:
+              - redis-cli
+              - ping
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - redis-cli
+              - ping
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          ports:
+           - containerPort: 6379
+          # Mount the volume into the pod
+          {{ if .redis-data-pd }}
+          volumeMounts:
+          - mountPath: /data
+            name: redis-data   # must match the name of the volume, above 
+          {{ end}}
