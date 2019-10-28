@@ -56,7 +56,7 @@ spec:
           - name: RELAY_NAME
             value: {{ .relay_name | default "default-cluster" }}
           - name: RELAY_REGION
-            value: {{ .region }}
+            value: "{{ .region }}"
       dnsPolicy: ClusterFirst
       serviceAccountName: webrelay
       terminationGracePeriodSeconds: 10     
