@@ -55,6 +55,10 @@ spec:
                 key: secret
           - name: RELAY_NAME
             value: {{ .relay_name | default "default-cluster" }}
+          - name: RELAY_API_ADDRESS
+            value: {{ .api_address | default "" }}
+          - name: RELAY_TUNNEL_API_ADDRESS
+            value: {{ .tunnel_address | default "" }}
       dnsPolicy: ClusterFirst
       serviceAccountName: webrelay
       terminationGracePeriodSeconds: 10     
