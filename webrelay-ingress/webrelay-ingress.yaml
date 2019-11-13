@@ -59,6 +59,8 @@ spec:
             value: {{ .api_address | default "" }}
           - name: RELAY_TUNNEL_API_ADDRESS
             value: {{ .tunnel_address | default "" }}
+          - name: RELAY_REGION
+            value: "{{ .region }}"
       dnsPolicy: ClusterFirst
       serviceAccountName: webrelay
       terminationGracePeriodSeconds: 10     
