@@ -56,9 +56,9 @@ spec:
           - name: RELAY_NAME
             value: {{ .relay_name | default "default-cluster" }}
           - name: RELAY_API_ADDRESS
-            value: {{ .api_address | default "" }}
+            value: {{ .api_address }}
           - name: RELAY_TUNNEL_API_ADDRESS
-            value: {{ .tunnel_address | default "" }}
+            value: {{ .tunnel_address }}
           - name: RELAY_REGION
             value: "{{ .region }}"
       dnsPolicy: ClusterFirst
