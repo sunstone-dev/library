@@ -19,7 +19,7 @@ data:
   key: {{ .key | b64enc }}
   secret: {{ .secret | b64enc }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
